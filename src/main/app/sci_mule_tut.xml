@@ -1,7 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+<mule xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
 	xmlns:spring="http://www.springframework.org/schema/beans" version="EE-3.6.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
-http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd"></mule>
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd">
+    <flow name="sci_mule_tut" >
+        <http:inbound-endpoint exchange-pattern="request-response" host="localhost" port="8084" doc:name="HTTP"/>
+        <expression-filter expression="#[payload != '/favicon.ico']" doc:name="Expression"/>
+        <set-variable doc:name="Set Language Variable" value="#[message.inboundProperties.language]" variableName="language"/>
+        <choice doc:name="Choice">
+            <when expression="#[flowVars.language == 'Spanish']">
+                <set-payload doc:name="Reply in Spanish" value="Hola!"/>
+            </when>
+            <when expression="#[flowVars.language == 'French']">
+                <set-payload doc:name="Reply in French" value="Bonjour!"/>
+            </when>
+            <otherwise>
+                <set-variable doc:name="Default greeting to English" value="#[flowVars.language]" variableName="language"/>
+                <set-payload doc:name="Reply in English" value="Hello!"/>
+            </otherwise>
+        </choice>
+        <logger level="INFO" doc:name="Logger" message="The reply in &quot;#[message.payload]&quot; means &quot;hello&quot; in #[flowVars.language]"/>
+        <file:outbound-endpoint path="C:\Temp\logs\anytimestudio" outputPattern="#[message.id]_#[flowVars.language].txt" responseTimeout="10000" doc:name="Greetings to disk"/>
+    </flow>
+</mule>
