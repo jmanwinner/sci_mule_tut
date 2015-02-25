@@ -159,48 +159,10 @@
 							<goal>java</goal>
 						</goals>
 					</execution>
-				</executions>
-				<configuration>
-					<mainClass>org.mule.MuleServer</mainClass>
-					<arguments>
-						<argument>-config</argument>
-						<argument>src/main/app/mule-config.xml</argument>
-					</arguments>
-					<classpathScope>compile</classpathScope>
-				</configuration>
+				</executions>		
 			</plugin>
 
-			<!--Install clover-plugins -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<version>2.4</version>
-				<executions>
-					<execution>
-						<id>copy-clover-plugins</id>
-						<phase>validate</phase>
-						<goals>
-							<goal>copy</goal>
-						</goals>
-						<configuration>
-							<overWriteReleases>true</overWriteReleases>
-							<overWriteSnapshots>true</overWriteSnapshots>
-							<overWriteIfNewer>true</overWriteIfNewer>
-							<stripVersion>true</stripVersion>
-
-							<outputDirectory>${project.build.testOutputDirectory}</outputDirectory>
-							<artifactItems>
-								<artifactItem>
-									<groupId>com.cloveretl</groupId>
-									<artifactId>cloveretl-engine</artifactId>
-									<version>${mule.version}</version>
-									<type>zip</type>
-								</artifactItem>
-							</artifactItems>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
+			
 			<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
 				<version>1.7</version>
@@ -352,7 +314,7 @@
 		
 	</pluginRepositories>
 	
-<distributionManagement>
+		<distributionManagement>
                 <repository>
                         <id>deployment</id>
                         <name>Internal Releases</name>
